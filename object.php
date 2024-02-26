@@ -1,30 +1,19 @@
 <?php
-
 abstract class BulkRunner {
-	protected $UserId;
-	protected $SearchType;
-	protected $SearchTerms;
-	protected $RecordIds;
+	protected $NumberOfContacts;
 
-	public function __construct($UserId, $SearchType, $SearchTerms, $RecordIds) {
-		$this->UserId = $UserId; 
-		$this->SearchType = $SearchType; 
-		$this->SearchTerms = $SearchTerms; 
-		$this->RecordIds = $RecordIds; 
+	public function __construct($NumberOfContacts) {
+		$this->NumberOfContacts = $NumberOfContacts;
 	}
 
-	public function GetContactIds($NumberOfContacts) {
-		if ($this->SearchType === 'ContactIds') {
+	public function GetContactIds() {
 			$Numbers = range(0, 100);
-			return array_slice($Numbers, 0, $NumberOfContacts);
-		} else {
-			throw new Exception("not implemented");
-		}
+			return array_slice($Numbers, 0, $this->NumberOfContacts);
 	}
 
 	// null = not chunked
-	abstract function GetActionChunkSize();
-	abstract function ApplyChanges($RecordIds);
+	abstract protected function GetActionChunkSize();
+	abstract protected function ApplyChanges($RecordIds);
 
 	public function RunAction() {
 		$ContactIds = $this->GetContactIds(10);
@@ -49,10 +38,6 @@ function Main() {
 	$User = "Matchell"; 
 	$RecordType = "Contacts";
 	$CustomDataToUpdate = ['BackgroundInfo' => "bulk updated"];
-	$AllContactIds = BulkActions::GetContactIds(10);
-
-	// TODO 
-	// 1. define subclass
-	// 2. run action 
+	$NumberOfContacts = 10;
 }
 Main();

@@ -46,12 +46,18 @@ function Main() {
 	$User = "Matchell"; 
 	$RecordType = "Contacts";
 	$CustomDataToUpdate = ['BackgroundInfo' => "bulk updated"];
-	$AllContactIds = BulkActions::GetContactIds(10);
+	$NumberOfContacts = 10;
+
 
 	// Create curried function
 	$RunBulkUpdate = function($ContactIdChunk) use ($User, $RecordType, $CustomDataToUpdate) {
 		Contact::BulkUpdateCustomData($User, $RecordType, $CustomDataToUpdate, $ContactIdChunk);
 	};
+	
+	// Get contacts via static function call.
+	$AllContactIds = BulkActions::GetContactIds($NumberOfContacts);
+
+	// Apply curried function to result.
 	BulkActions::RunBulkAction("UpdateFields", $RunBulkUpdate, $AllContactIds);
 }
 Main();

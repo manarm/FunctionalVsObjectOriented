@@ -1,29 +1,19 @@
 <?php
 abstract class BulkRunner {
-	protected $UserId;
-	protected $SearchType;
-	protected $SearchTerms;
-	protected $RecordIds;
+	protected $NumberOfContacts;
 
-	public function __construct($UserId, $SearchType, $SearchTerms, $RecordIds) {
-		$this->UserId = $UserId; 
-		$this->SearchType = $SearchType; 
-		$this->SearchTerms = $SearchTerms; 
-		$this->RecordIds = $RecordIds; 
+	public function __construct($NumberOfContacts) {
+		$this->NumberOfContacts = $NumberOfContacts;
 	}
 
-	public function GetContactIds($NumberOfContacts) {
-		if ($this->SearchType === 'ContactIds') {
+	public function GetContactIds() {
 			$Numbers = range(0, 100);
-			return array_slice($Numbers, 0, $NumberOfContacts);
-		} else {
-			throw new Exception("not implemented");
-		}
+			return array_slice($Numbers, 0, $this->NumberOfContacts);
 	}
 
 	// null = not chunked
-	abstract function GetActionChunkSize();
-	abstract function ApplyChanges($RecordIds);
+	abstract protected function GetActionChunkSize();
+	abstract protected function ApplyChanges($RecordIds);
 
 	public function RunAction() {
 		$ContactIds = $this->GetContactIds(10);
@@ -45,18 +35,41 @@ abstract class BulkRunner {
 }
 
 class BulkUpdateFieldsRunner extends BulkRunner {
-	function GetActionChunkSize() {}
-	function ApplyChanges($RecordIds) {}
+	protected $User;
+	protected $RecordType;
+	protected $CustomDataToUpdate;
+
+	public function __construct($User, $RecordType, $CustomDataToUpdate, $NumberOfContacts) {
+		parent::__construct($NumberOfContacts);
+		$this->User = $User; 
+		$this->RecordType = $RecordType; 
+		$this->CustomDataToUpdate = $CustomDataToUpdate; 	
+	}
+
+	protected function GetActionChunkSize() {
+		return 3;
+	}
+
+	protected function ApplyChanges($RecordIds) {
+			// Do actual update here.
+			echo "Update: ".json_encode([
+				'User' => $this->User, 
+				"RecordType" => $this->RecordType, 
+				"CustomDataToUpdate" => $this->CustomDataToUpdate, 
+				"ContactIds" => $RecordIds, 
+		])."\n";
+
+		return true;
+	}
 }
 
 function Main() {
 	$User = "Matchell"; 
 	$RecordType = "Contacts";
 	$CustomDataToUpdate = ['BackgroundInfo' => "bulk updated"];
-	$AllContactIds = BulkActions::GetContactIds(10);
+	$NumberOfContacts = 10;
 
-	// TODO
-	// 1. create curried function
-	// 2. pass to runner
+	$BulkUpdateFieldsRunner = new BulkUpdateFieldsRunner($User, $RecordType, $CustomDataToUpdate, $NumberOfContacts);
+	$BulkUpdateFieldsRunner->RunAction();
 }
 Main();

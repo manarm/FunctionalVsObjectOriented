@@ -47,9 +47,5 @@ function Main() {
 	$RecordType = "Contacts";
 	$CustomDataToUpdate = ['BackgroundInfo' => "bulk updated"];
 	$AllContactIds = BulkActions::GetContactIds(10);
-
-	// TODO
-	// 1. create curried function
-	// 2. pass to runner
 }
 Main();
