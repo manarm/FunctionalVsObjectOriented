@@ -6,7 +6,7 @@ abstract class BulkRunner {
 		$this->NumberOfContacts = $NumberOfContacts;
 	}
 
-	public function GetContactIds() {
+	protected function GetContactIds() {
 			$Numbers = range(0, 100);
 			return array_slice($Numbers, 0, $this->NumberOfContacts);
 	}
