@@ -1,17 +1,4 @@
 <?php
-// class Contact {
-// 	public static function BulkUpdateCustomData($User, $RecordType, $CustomDataToUpdate, $ContactIds) {
-// 		// Do actual update here.
-// 		echo "Update: ".json_encode([
-// 				'User' => $User, 
-// 				"RecordType" => $RecordType, 
-// 				"CustomDataToUpdate" => $CustomDataToUpdate, 
-// 				"ContactIds" => $ContactIds, 
-// 		])."\n";
-// 		return true;
-// 	}
-// }
-
 abstract class BulkRunner {
 	protected $UserId;
 	protected $SearchType;
@@ -55,6 +42,11 @@ abstract class BulkRunner {
 			echo "end sql transaction $Index  \n";
 		}
 	}
+}
+
+class BulkUpdateFieldsRunner extends BulkRunner {
+	function GetActionChunkSize() {}
+	function ApplyChanges($RecordIds) {}
 }
 
 function Main() {

@@ -50,5 +50,9 @@ function Main() {
 	$RecordType = "Contacts";
 	$CustomDataToUpdate = ['BackgroundInfo' => "bulk updated"];
 	$AllContactIds = BulkActions::GetContactIds(10);
+
+	// TODO 
+	// 1. define subclass
+	// 2. run action 
 }
 Main();
