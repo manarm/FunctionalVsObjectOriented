@@ -48,8 +48,10 @@ function Main() {
 	$CustomDataToUpdate = ['BackgroundInfo' => "bulk updated"];
 	$AllContactIds = BulkActions::GetContactIds(10);
 
-	// TODO
-	// 1. create curried function
-	// 2. pass to runner
+	// Create curried function
+	$RunBulkUpdate = function($ContactIdChunk) use ($User, $RecordType, $CustomDataToUpdate) {
+		Contact::BulkUpdateCustomData($User, $RecordType, $CustomDataToUpdate, $ContactIdChunk);
+	};
+	BulkActions::RunBulkAction("UpdateFields", $RunBulkUpdate, $AllContactIds);
 }
 Main();
